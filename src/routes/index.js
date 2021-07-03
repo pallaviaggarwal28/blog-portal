@@ -1,11 +1,12 @@
 import express from 'express';
-import { testEnvironmentVariable } from '../settings';
+import { indexPage } from '../controllers/index';
+import { blogsPage } from '../controllers/blogs';
+import { insertBlog } from '../controllers/blogs';
 
-const router = express.Router();
+const indexRouter = express.Router();
 
-/* GET home page. */
-router.get('/', (req, res) => {
-  res.status(200).json({ message: testEnvironmentVariable });
-});
+indexRouter.get('/', indexPage);
+indexRouter.get('/blogs', blogsPage);
+indexRouter.post('/saveBlog', insertBlog)
 
-module.exports = router;
+export default indexRouter;

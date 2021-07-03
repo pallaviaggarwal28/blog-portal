@@ -9,7 +9,8 @@
     "lint": "./node_modules/.bin/eslint ./src",
     "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
     "postpretty": "yarn lint --fix",
-    "test": "nyc --reporter=html --reporter=text --reporter=lcov mocha -r @babel/register"
+    "test": "nyc --reporter=html --reporter=text --reporter=lcov mocha -r @babel/register",
+    "runQuery": "babel-node ./src/utils/runQuery"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -17,7 +18,8 @@
     "dotenv": "^10.0.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "pg": "^8.6.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.5",
@@ -32,8 +34,8 @@
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
-    "nodemon": "^2.0.7",
     "mocha": "^9.0.1",
+    "nodemon": "^2.0.7",
     "nyc": "^15.1.0",
     "prettier": "^2.3.1",
     "sinon": "^11.1.1",
