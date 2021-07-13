@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blog Portal - Add new Blog</title>
+  <title>Blog Portal - Registration</title>
   <style>
       form {
           /* Center the form on the page */
@@ -76,23 +76,29 @@
   </style>
 </head>
 <body>
-<!--  <form action="http://localhost:3000/saveBlog" method="post">-->
-  <form action="/saveBlog" method="post">
-    <h1>Add New Blog</h1>
+  <form action="/signUp" method="post">
+    <h1>User Registration</h1>
     <ul>
       <li>
-        <label for="blogTitle">Title</label>
-        <input type="text" id="blogTitle" name="blog_title" required minlength="4">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
       </li>
       <li>
-        <label for="blogContent">Content</label>
-        <textarea id="blogContent" name="blog_content" required minlength="10"></textarea>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required minlength="4">
+      </li>
+      <li>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="8">
+      </li>
+      <li>
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8">
       </li>
       <li class="button">
-        <button type="submit">Save</button>
+        <button type="submit">Register</button>
       </li>
     </ul>
   </form>
-
 </body>
 </html>
