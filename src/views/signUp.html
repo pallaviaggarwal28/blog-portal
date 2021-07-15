@@ -73,6 +73,40 @@
       h1 {
           text-align: center;
       }
+
+      #message, #passwordsMisMatchMessage {
+          display:none;
+          background: #f1f1f1;
+          color: #000;
+          position: relative;
+          padding: 20px;
+          margin-top: 10px;
+      }
+
+      #message p {
+          padding: 10px 35px;
+          font-size: 18px;
+      }
+      .valid {
+          color: green;
+      }
+
+      .valid:before {
+          position: relative;
+          left: -35px;
+          content: "&#10004;";
+      }
+
+      /* Add a red text color and an "x" icon when the requirements are wrong */
+      .invalid {
+          color: red;
+      }
+
+      .invalid:before {
+          position: relative;
+          left: -35px;
+          content: "&#10006;";
+      }
   </style>
 </head>
 <body>
@@ -84,21 +118,86 @@
         <input type="email" id="email" name="email" required>
       </li>
       <li>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required minlength="4">
-      </li>
-      <li>
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required minlength="8">
+        <input type="password" id="password" name="password" required minlength="8"
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+               onkeyup="checkPass();">
       </li>
       <li>
         <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8">
+        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8" onkeyup="checkPass();">
       </li>
       <li class="button">
-        <button type="submit">Register</button>
+        <button type="submit" id="submit">Register</button>
       </li>
     </ul>
   </form>
+  <div id="passwordsMisMatchMessage">
+    <h3>Passwords do not match</h3>
+  </div>
+  <div id="message">
+    <h3>Password must contain the following:</h3>
+    <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+    <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+    <p id="number" class="invalid">A <b>number</b></p>
+    <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+  </div>
+  <script>
+    function checkPass() {
+      const pass = document.getElementById("password").value;
+      const confirmPass = document.getElementById("confirmPassword").value;
+      const letter = document.getElementById("letter");
+      const capital = document.getElementById("capital");
+      const number = document.getElementById("number");
+
+      pass.onfocus = function() {
+        document.getElementById("message").style.display = "block";
+      }
+
+      pass.onblur = function() {
+        document.getElementById("message").style.display = "none";
+      }
+
+      pass.onkeyup = function() {
+        // Validate lowercase letters
+        const lowerCaseLetters = /[a-z]/g;
+        if(pass.value.match(lowerCaseLetters)) {
+          letter.classList.remove("invalid");
+          letter.classList.add("valid");
+        } else {
+          letter.classList.remove("valid");
+          letter.classList.add("invalid");
+        }
+
+        // Validate capital letters
+        const upperCaseLetters = /[A-Z]/g;
+        if(pass.value.match(upperCaseLetters)) {
+          capital.classList.remove("invalid");
+          capital.classList.add("valid");
+        } else {
+          capital.classList.remove("valid");
+          capital.classList.add("invalid");
+        }
+
+        // Validate numbers
+        const numbers = /[0-9]/g;
+        if(pass.value.match(numbers)) {
+          number.classList.remove("invalid");
+          number.classList.add("valid");
+        } else {
+          number.classList.remove("valid");
+          number.classList.add("invalid");
+        }
+      }
+
+      if(pass !== confirmPass) {
+        document.getElementById("passwordsMisMatchMessage").style.display = "block"
+        document.getElementById("submit").disabled = true;
+      } else{
+        document.getElementById("passwordsMisMatchMessage").style.display = "none"
+        document.getElementById("submit").disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
