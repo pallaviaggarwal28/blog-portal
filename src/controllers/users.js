@@ -1,33 +1,94 @@
 import Model from '../models/model';
 import bcrypt from 'bcryptjs';
+import { blogsPage, blogsPagePerUser } from "./blogs";
 
 const usersModel = new Model('users');
+const LocalStorage = require('node-localstorage').LocalStorage;
+const localStorage = new LocalStorage('./scratch');
 
-export const getUser = async(req, res) => {
+export const getUserDetails = async(email) => {
   try {
-    const {email, password} = req.body;
     const clause = ` where email='${email}'`;
-    const data = await usersModel.select('*', clause);
-    if(data.length() > 0)
-      res.status(400).json({messages: 'User already exists. Please login using this email'});
+    return await usersModel.select('*', clause);
     } catch(err) {
-      res.status(200).json({messages: err.stack});
+      throw new Error(err.stack);
     }
 };
 
 export const registerUser = async(req, res) => {
-  await getUser(req, res);
-  const {email, password} = req.body;
-  const columns = 'email, password';
-  let hashPassword='';
-  await bcrypt.hash(password, 12).then((hash) => {
-    hashPassword=hash;
-  })
-  const values = `'${email}', '${hashPassword}'`;
-  try {
-    await usersModel.insert(columns, values);
-    res.redirect('/login');
-  } catch(err) {
-    res.status(200).json({messages: err.stack});
+  if(localStorage.getItem('email')) {
+    res.cookie('email', localStorage.getItem('email'), {
+      httpOnly: true,
+      signed: true
+      // secure: true // secure when in production
+    });
+    await blogsPagePerUser(localStorage.getItem('email'), res);
   }
+  else {
+    const {email, password} = req.body;
+    const userData = await getUserDetails(email);
+    if(userData.rows.length === 0) {
+      const columns = 'email, password';
+      const hashPassword = await bcrypt.hash(password, 12);
+      const values = `'${email}', '${hashPassword}'`;
+      try {
+        await usersModel.insert(columns, values);
+        res.cookie('email', email, {
+          httpOnly: true,
+          signed: true
+          // secure: true // secure when in production
+        });
+        await setLocalStorage(email);
+        await blogsPagePerUser(email, res);
+      } catch(err) {
+        res.status(200).json({messages: err.stack});
+      }
+    }
+    else {
+      res.status(200).json({messages: 'User already exists. Please login using this email'});
+    }
+  }
+}
+
+export const performLogin = async(req, res) => {
+  if(localStorage.getItem('email')) {
+    res.cookie('email', localStorage.getItem('email'), {
+      httpOnly: true,
+      signed: true
+      // secure: true // secure when in production
+    });
+    await blogsPagePerUser(localStorage.getItem('email'), res);
+  }
+  else {
+    const {email, password} = req.body;
+    const userData = await getUserDetails(email);
+    if(userData.rows.length === 1) {
+      if(await bcrypt.compare(password, userData.rows[0].password)) {
+        res.cookie('email', email, {
+          httpOnly: true,
+          signed: true
+          // secure: true // secure when in production
+        });
+        await setLocalStorage(email);
+        await blogsPagePerUser(email, res);
+      } else {
+        res.status(404).json({messages: 'Invalid password for '+email});
+      }
+    }
+    else {
+      res.status(404).json({messages: 'No user found with emailId '+email + ". Please Sign Up"});
+    }
+  }
+}
+
+export const setLocalStorage = async(email) => {
+  localStorage.setItem('email', email);
+  console.log("local Storage" +localStorage.getItem('email'));
+}
+
+export const logOut = async(req, res) => {
+  localStorage.removeItem('email');
+  req.flash('logged out of system');
+  res.clearCookie('email');
+  res.redirect('/');
 }

@@ -2,9 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>My Blogs Page - Blog Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-$END$
+  <nav class="navbar navbar-light bg-light">
+      <span class="navbar-header mb-0 h1 mx-auto">
+        Blog Portal
+      </span>
+    <form class="form-inline">
+      <a href="/createBlog" class="btn btn-warning me-2">Create New Blog</a>
+      <a href="/logout" class="btn btn-danger">Logout</a>
+    </form>
+  </nav>
+  <br>
+  <% for(var i = 0; i < blogs.rows.length; i++) { %>
+  <div class="row row-cols-1 row-cols-md-1 g-4">
+    <div class="col">
+      <div class="card border-success">
+        <img src="" class="card-img-top" alt="">
+        <div class="card-body" key=<%= blogs.rows[i].id %>>
+          <h5 class="card-title"><%= blogs.rows[i].blog_title %></h5>
+          <p class="card-text"><%= blogs.rows[i].blog_content %></p>
+          <p class="card-footer">
+            <span>Author: <%= blogs.rows[i].created_by %></span>
+            <br>
+            <span>Created Date: <%= blogs.rows[i].created_at %></span>
+          </p>
+          <a href="/editBlog/<%= blogs.rows[i].id %>" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Edit">Edit</a>
+          <a href="/deleteBlog/<%= blogs.rows[i].id %>" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">Delete</a>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+  <% } %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

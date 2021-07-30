@@ -1,16 +1,22 @@
 import express from 'express';
-import { blogsPage } from '../controllers/blogs';
-import { insertBlog } from '../controllers/blogs';
-import { registerUser } from '../controllers/users';
+import { blogsPage, blogsPagePerUser, deleteBlog, editBlog, insertBlog, viewBlogToEdit } from "../controllers/blogs";
+import { logOut, registerUser } from "../controllers/users";
+import { performLogin } from '../controllers/users';
+import { ensureUserLoggedIn } from '../controllers/middleware';
 
 const indexRouter = express.Router();
 
-indexRouter.get('/', (req, res) => res.sendFile(`${process.cwd()}/src/views/home.html`));
-indexRouter.get('/login', (req, res) => res.sendFile(`${process.cwd()}/src/views/login.html`));
+indexRouter.get('/', blogsPage);
 indexRouter.get('/signUp', (req, res) => res.sendFile(`${process.cwd()}/src/views/signUp.html`));
 indexRouter.post('/signUp', registerUser);
-//indexRouter.post('/login', loginUser);
-indexRouter.get('/addNewBlog', (req, res) => res.sendFile(`${process.cwd()}/src/views/addNewBlog.html`));
-indexRouter.post('/saveBlog', insertBlog)
+indexRouter.get('/login', (req, res) => res.sendFile(`${process.cwd()}/src/views/login.html`));
+indexRouter.post('/login', performLogin);
+indexRouter.get('/createBlog', ensureUserLoggedIn, (req, res) => res.sendFile(`${process.cwd()}/src/views/addNewBlog.html`));
+indexRouter.post('/createBlog', insertBlog);
+indexRouter.get('/logout', logOut);
+indexRouter.get('/myBlogs', ensureUserLoggedIn, (req, res) => blogsPagePerUser);
+indexRouter.get('/editBlog/:id', viewBlogToEdit);
+indexRouter.post('/editBlog', editBlog);
+indexRouter.get('/deleteBlog/:id', deleteBlog);
 
 export default indexRouter;
