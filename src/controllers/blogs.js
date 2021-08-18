@@ -37,7 +37,7 @@ export const insertBlog = async(req, res) => {
   const values = `'${blog_title}', '${blog_content}', '${created_by}'`;
   try {
     await blogsModel.insert(columns, values);
-    req.flash('blog created successfully');
+    req.flash('success', 'blog created successfully');
     res.redirect('/');
   } catch(err) {
     res.status(400).json({messages: err.stack});
@@ -52,7 +52,7 @@ export const editBlog = async(req, res) => {
   const clause = ` where id='${blogId}'`;
   try {
     await blogsModel.update(updateQueryValues, clause);
-    req.flash('blog updated successfully');
+    req.flash('success', 'blog updated successfully');
     res.redirect('/');
   } catch(err) {
     res.status(400).json({messages: err.stack});
@@ -87,7 +87,7 @@ export const deleteBlog = async(req, res) => {
     const clause = ` where id='${id}'`;
     console.log(clause);
     await blogsModel.delete(clause);
-    req.flash('blog deleted successfully');
+    req.flash('success', 'blog deleted successfully');
     res.redirect("/")
   } catch(err) {
     throw new Error(err.stack);
