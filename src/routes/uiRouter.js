@@ -1,22 +1,20 @@
 import express from 'express';
-import { blogsPage, blogsPagePerUser, deleteBlog, editBlog, insertBlog, viewBlogToEdit } from "../controllers/blogs";
-import { logOut, registerUser } from "../controllers/users";
-import { performLogin } from '../controllers/users';
+import { blogsPage, blogsPagePerUser, deleteBlog, viewBlogToEdit } from "../controllers/blogs";
+import { logOut } from "../controllers/users";
 import { ensureUserLoggedIn } from '../controllers/middleware';
 
-const indexRouter = express.Router();
+const uiRouter = express.Router();
 
-indexRouter.get('/', blogsPage);
-indexRouter.get('/signUp', (req, res) => res.sendFile(`${process.cwd()}/src/views/signUp.html`));
-indexRouter.post('/signUp', registerUser);
-indexRouter.get('/login', (req, res) => res.sendFile(`${process.cwd()}/src/views/login.html`));
-indexRouter.post('/login', performLogin);
-indexRouter.get('/createBlog', ensureUserLoggedIn, (req, res) => res.sendFile(`${process.cwd()}/src/views/addNewBlog.html`));
-indexRouter.post('/createBlog', insertBlog);
-indexRouter.get('/logout', logOut);
-indexRouter.get('/myBlogs', ensureUserLoggedIn, (req, res) => blogsPagePerUser);
-indexRouter.get('/editBlog/:id', viewBlogToEdit);
-indexRouter.post('/editBlog', editBlog);
-indexRouter.get('/deleteBlog/:id', deleteBlog);
 
-export default indexRouter;
+
+uiRouter.get('/', blogsPage);
+uiRouter.get('/myBlogs', ensureUserLoggedIn, (req, res) => blogsPagePerUser(req.signedCookies.email, res));
+uiRouter.get('/signUp', (req, res) => res.render(`signUp`));
+uiRouter.get('/login', (req, res) => res.render(`login`));
+uiRouter.get('/createBlog', ensureUserLoggedIn, (req, res) => res.render(`addNewBlog`));
+uiRouter.get('/logout', logOut);
+uiRouter.get('/myBlogs', ensureUserLoggedIn, (req, res) => blogsPagePerUser);
+uiRouter.get('/editBlog/:id', viewBlogToEdit);
+uiRouter.get('/deleteBlog/:id', deleteBlog);
+
+export default uiRouter;

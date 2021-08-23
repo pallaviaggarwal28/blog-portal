@@ -1,17 +1,17 @@
 import logger from 'morgan';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import indexRouter from './routes/index';
 import cors from "cors";
+import uiRouter from "./routes/uiRouter";
+import apiRouter from "./routes/apiRouter";
 
 const app = express();
 
 const engines = require('consolidate');
 const session = require('express-session');
-const flash = require('req-flash');
 app.set('views', __dirname + '/views');
+app.set('view engine', 'pug');
 app.engine('html', engines.ejs);
-app.set('view engine', 'html');
 
 app.use(logger('dev'));
 app.use(session({
@@ -19,7 +19,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-app.use(flash());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -28,6 +28,7 @@ app.use(cors({
     credentials: true
 }));
 
-app.use('/', indexRouter);
+app.use('/', uiRouter);
+app.use('/api', apiRouter);
 
 export default app;

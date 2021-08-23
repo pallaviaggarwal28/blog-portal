@@ -88,7 +88,6 @@ export const setLocalStorage = async(email) => {
 
 export const logOut = async(req, res) => {
   localStorage.removeItem('email');
-  req.flash('logged out of system');
   res.clearCookie('email');
   res.redirect('/');
 }

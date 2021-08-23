@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "babel ./src --out-dir build",
     "start": "node ./build/bin/www",
-    "startdev": "nodemon --exec babel-node ./src/bin/www",
+    "dev": "nodemon --exec babel-node ./src/bin/www",
     "lint": "./node_modules/.bin/eslint ./src",
     "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
     "postpretty": "yarn lint --fix",
@@ -27,6 +27,7 @@
     "morgan": "~1.9.1",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
+    "pug": "^3.0.2",
     "req-flash": "^0.0.3",
     "request": "^2.88.2"
   },
