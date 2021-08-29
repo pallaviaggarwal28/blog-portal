@@ -10,7 +10,7 @@
   <div class="row">
     <div class="col-md-4 offset-md-4">
       <div class="login-form bg-light mt-4 p-4">
-        <form action="/api/editBlog" method="post" class="form-horizontal">
+        <form action="/api/editBlog/<%= blogs.rows[0].id %>" method="post" class="form-horizontal">
           <h2 class="text-center">Edit Blog</h2>
           <div class="col-12">
             <label for="blogTitle" class="form-label">Title</label>
@@ -24,7 +24,7 @@
           <br>
           <div class="col-12">
             <button type="submit" class="btn btn-primary" id="submit">Save</button>
-            <button type="cancel" class="btn btn-primary" onclick="location.href='/myBlogs'">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="location.href='/myBlogs'">Cancel</button>
           </div>
         </form>
       </div>

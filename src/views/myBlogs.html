@@ -7,16 +7,20 @@
 </head>
 <body>
   <nav class="navbar navbar-light bg-light">
-      <span class="navbar-header mb-0 h1 mx-auto">
-        Blog Portal
-      </span>
-    <form class="form-inline">
-      <a href="/createBlog" class="btn btn-warning me-2">Create New Blog</a>
-      <a href="/logout" class="btn btn-danger">Logout</a>
+    <span class="navbar-header mb-0 h1 mx-auto">
+      Blog Portal
+    </span>
+    <a href="/createBlog" class="btn btn-warning me-2">Create New Blog</a>
+    <form action="/api/logout" method="post">
+      <button type="submit" class="btn btn-danger"
+              onclick="return alert('You have been Logged out of the system.')">Logout</button>
     </form>
   </nav>
   <br>
-  <% for(var i = 0; i < blogs.rows.length; i++) { %>
+  <% if (blogs.rows.length === 0) { %>
+  <p class="align-self-center">Welcome to Blog Portal.Click on <b>Create New Blog</b> to get started</p>
+  <% }
+  for(var i = 0; i < blogs.rows.length; i++) { %>
   <div class="row row-cols-1 row-cols-md-1 g-4">
     <div class="col">
       <div class="card border-success">
@@ -29,8 +33,13 @@
             <br>
             <span>Created Date: <%= blogs.rows[i].created_at %></span>
           </p>
-          <a href="/editBlog/<%= blogs.rows[i].id %>" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Edit">Edit</a>
-          <a href="/deleteBlog/<%= blogs.rows[i].id %>" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">Delete</a>
+          <div class="d-flex flex-row gap-3">
+            <a href="myBlogs/edit/<%= blogs.rows[i].id %>" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Edit">Edit</a>
+            <form action="/api/deleteBlog/<%= blogs.rows[i].id %>" method="post">
+              <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"
+                      onclick="return confirm('Are you sure you want to delete your blog?')">Delete</button>
+            </form>
+          </div>
         </div>
       </div>
       <br>

@@ -1,6 +1,5 @@
 import Model from '../models/model';
 import bcrypt from 'bcryptjs';
-import { blogsPage, blogsPagePerUser } from "./blogs";
 
 const usersModel = new Model('users');
 const LocalStorage = require('node-localstorage').LocalStorage;
@@ -22,7 +21,7 @@ export const registerUser = async(req, res) => {
       signed: true
       // secure: true // secure when in production
     });
-    await blogsPagePerUser(localStorage.getItem('email'), res);
+    res.redirect('/myBlogs');
   }
   else {
     const {email, password} = req.body;
@@ -39,7 +38,7 @@ export const registerUser = async(req, res) => {
           // secure: true // secure when in production
         });
         await setLocalStorage(email);
-        await blogsPagePerUser(email, res);
+        res.redirect('/myBlogs');
       } catch(err) {
         res.status(200).json({messages: err.stack});
       }
@@ -57,7 +56,7 @@ export const performLogin = async(req, res) => {
       signed: true
       // secure: true // secure when in production
     });
-    await blogsPagePerUser(localStorage.getItem('email'), res);
+    res.redirect('/myBlogs');
   }
   else {
     const {email, password} = req.body;
@@ -70,7 +69,7 @@ export const performLogin = async(req, res) => {
           // secure: true // secure when in production
         });
         await setLocalStorage(email);
-        await blogsPagePerUser(email, res);
+        res.redirect('/myBlogs');
       } else {
         res.status(404).json({messages: 'Invalid password for '+email});
       }
@@ -83,7 +82,6 @@ export const performLogin = async(req, res) => {
 
 export const setLocalStorage = async(email) => {
   localStorage.setItem('email', email);
-  console.log("local Storage" +localStorage.getItem('email'));
 }
 
 export const logOut = async(req, res) => {

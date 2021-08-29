@@ -39,14 +39,12 @@ export const insertBlog = async(req, res) => {
 }
 
 export const editBlog = async(req, res) => {
-  const blogId = getId();
   const {blog_title, blog_content} = req.body;
-  console.log(blogId);
   const updateQueryValues = `blog_title='${blog_title}',blog_content='${blog_content}'`;
   const clause = ` where id='${blogId}'`;
   try {
     await blogsModel.update(updateQueryValues, clause);
-    res.redirect('/');
+    res.redirect('/myBlogs');
   } catch(err) {
     res.status(400).json({messages: err.stack});
   }
@@ -54,8 +52,6 @@ export const editBlog = async(req, res) => {
 
 export const viewBlogToEdit = async(req, res) => {
   try {
-    console.log(req.params.id);
-    setId(req.params.id);
     const clause = ` where id='${req.params.id}'`;
     const data = await blogsModel.select('*', clause);
     res.render(`${process.cwd()}/src/views/editBlog.html`, {blogs: data})
@@ -64,23 +60,11 @@ export const viewBlogToEdit = async(req, res) => {
   }
 }
 
-function setId(blog_id) {
-  id = blog_id;
-}
-
-function getId() {
-  return id;
-}
-
 export const deleteBlog = async(req, res) => {
-  //alert("Are you sure you want to delete the blog");
-  const id = req.params.id;
-  console.log(id);
   try {
-    const clause = ` where id='${id}'`;
-    console.log(clause);
+    const clause = ` where id='${req.params.id}'`;
     await blogsModel.delete(clause);
-    res.redirect("/")
+    res.redirect('/myBlogs');
   } catch(err) {
     throw new Error(err.stack);
   }

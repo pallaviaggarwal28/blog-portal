@@ -10,7 +10,6 @@ class Model {
   async select(columns, clause) {
     let query = `SELECT ${columns} from ${this.table}`;
     if (clause) query += clause;
-    console.log(query);
     return this.pool.query(query);
   }
 
@@ -24,17 +23,13 @@ class Model {
   async update(updateQueryValues, clause) {
     let query = `UPDATE ${this.table}
                   SET ${updateQueryValues}`;
-    console.log(query);
     if (clause) query += clause;
-    console.log(query);
     return this.pool.query(query);
   }
 
   async delete(clause) {
     let query = `DELETE from ${this.table}`;
-    console.log(query);
     if (clause) query += clause;
-    console.log(query);
     return this.pool.query(query);
   }
 }

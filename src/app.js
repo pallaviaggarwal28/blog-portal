@@ -10,8 +10,8 @@ const app = express();
 const engines = require('consolidate');
 const session = require('express-session');
 app.set('views', __dirname + '/views');
-app.set('view engine', 'pug');
 app.engine('html', engines.ejs);
+app.set('view engine', 'html');
 
 app.use(logger('dev'));
 app.use(session({
