@@ -1,0 +1,19 @@
+<div class="header clearfix">
+  <nav class="navbar navbar-light bg-light">
+    <span class="navbar-header mb-0 h1 mx-auto">
+      Blog Portal
+    </span>
+      <a class="btn btn-success" href="/" style="margin-right: 10px;">Home</a>
+      <% console.log(alreadyLoggedIn);
+      if(alreadyLoggedIn) { %>
+        <a href="/createBlog" class="btn btn-warning me-2">Create New Blog</a>
+        <form action="/api/logout" method="post">
+          <button type="submit" class="btn btn-danger"
+                  onclick="return alert('You have been Logged out of the system.')">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="btn btn-warning me-2">Login</a>
+        <a href="/signUp" class="btn btn-danger">Signup</a>
+      <% } %>
+  </nav>
+</div>

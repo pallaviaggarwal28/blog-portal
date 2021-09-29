@@ -1,16 +1,15 @@
 export const ensureUserLoggedIn = async(req, res, next) => {
-  if(req.signedCookies.email) {
-    next();
+  if(!req.signedCookies.email) {
+    res.redirect('/login');
   } else {
-    res.status(401);
-    next(res.redirect('login', 401));
+    return next();
   }
 }
 
 export const validateSession = async(req, res, next) => {
-  if(!req.signedCookies.email) {
-    next();
+  if(req.signedCookies.email) {
+    res.redirect('/myBlogs');
   } else {
-    next(res.redirect('/myBlogs'));
+    return next();
   }
 }

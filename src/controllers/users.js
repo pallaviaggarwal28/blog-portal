@@ -71,7 +71,7 @@ export const performLogin = async(req, res) => {
         await setLocalStorage(email);
         res.redirect('/myBlogs');
       } else {
-        res.status(404).json({messages: 'Invalid password for '+email});
+        res.status(403).json({messages: 'Invalid password for '+email});
       }
     }
     else {

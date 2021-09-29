@@ -1,15 +1,12 @@
 import Model from '../models/model';
-const LocalStorage = require('node-localstorage').LocalStorage;
-const localStorage = new LocalStorage('./scratch');
 
 const blogsModel = new Model('blogs');
-let id = '';
 
 export const blogsPage = async(req, res) => {
     try {
       const clause = ` order by created_at desc`;
       const data = await blogsModel.select('*', clause);
-      res.render(`${process.cwd()}/src/views/home.html`, {blogs: data})
+      res.render(`${process.cwd()}/src/views/home.html`, {blogs: data, alreadyLoggedIn: false});
     } catch(err) {
       throw new Error(err.stack);
     }
@@ -19,7 +16,7 @@ export const blogsPagePerUser = async(email, res) => {
   try {
     const clause = ` where created_by='${email}' order by created_at desc`;
     const data = await blogsModel.select('*', clause);
-    res.render(`${process.cwd()}/src/views/myBlogs.html`, {blogs: data});
+    res.render(`${process.cwd()}/src/views/myBlogs.html`, {blogs: data, alreadyLoggedIn: true});
   } catch(err) {
     throw new Error(err.stack);
   }
@@ -41,7 +38,7 @@ export const insertBlog = async(req, res) => {
 export const editBlog = async(req, res) => {
   const {blog_title, blog_content} = req.body;
   const updateQueryValues = `blog_title='${blog_title}',blog_content='${blog_content}'`;
-  const clause = ` where id='${blogId}'`;
+  const clause = ` where id='${req.params.id}'`;
   try {
     await blogsModel.update(updateQueryValues, clause);
     res.redirect('/myBlogs');
