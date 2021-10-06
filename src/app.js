@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import uiRouter from "./routes/uiRouter";
 import apiRouter from "./routes/apiRouter";
+import { errorLogger, errorResponder } from "./controllers/middleware";
 
 const app = express();
 
@@ -30,5 +31,7 @@ app.use(cors({
 
 app.use('/', uiRouter);
 app.use('/api', apiRouter);
+app.use(errorLogger)
+app.use(errorResponder)
 
 export default app;

@@ -4,15 +4,13 @@ import bcrypt from 'bcryptjs';
 const usersModel = new Model('users');
 const LocalStorage = require('node-localstorage').LocalStorage;
 const localStorage = new LocalStorage('./scratch');
+const asyncHandler = require('express-async-handler');
+const createError = require('http-errors')
 
-export const getUserDetails = async(email) => {
-  try {
+export const getUserDetails = asyncHandler(async(email) => {
     const clause = ` where email='${email}'`;
     return await usersModel.select('*', clause);
-    } catch(err) {
-      throw new Error(err.stack);
-    }
-};
+});
 
 export const registerUser = async(req, res) => {
   if(localStorage.getItem('email')) {
@@ -30,7 +28,6 @@ export const registerUser = async(req, res) => {
       const columns = 'email, password';
       const hashPassword = await bcrypt.hash(password, 12);
       const values = `'${email}', '${hashPassword}'`;
-      try {
         await usersModel.insert(columns, values);
         res.cookie('email', email, {
           httpOnly: true,
@@ -39,15 +36,12 @@ export const registerUser = async(req, res) => {
         });
         await setLocalStorage(email);
         res.redirect('/myBlogs');
-      } catch(err) {
-        res.status(200).json({messages: err.stack});
       }
-    }
     else {
-      res.status(200).json({messages: 'User already exists. Please login using this email'});
+      throw createError(200, `User '${email}' already exists`)
+      // res.status(200).json({messages: 'User already exists. Please login using this email'});
     }
-  }
-}
+}}
 
 export const performLogin = async(req, res) => {
   if(localStorage.getItem('email')) {
@@ -71,11 +65,13 @@ export const performLogin = async(req, res) => {
         await setLocalStorage(email);
         res.redirect('/myBlogs');
       } else {
-        res.status(403).json({messages: 'Invalid password for '+email});
+        throw createError(403, `Invalid password for '${email}'`)
+        //res.status(403).json({messages: 'Invalid password for '+email});
       }
     }
     else {
-      res.status(404).json({messages: 'No user found with emailId '+email + ". Please Sign Up"});
+      throw createError(404, `User '${email}' not found`)
+      // res.status(404).json({messages: 'No user found with emailId '+email + ". Please Sign Up"});
     }
   }
 }
