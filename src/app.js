@@ -10,6 +10,8 @@ const app = express();
 
 const engines = require('consolidate');
 const session = require('express-session');
+const flash = require('connect-flash');
+
 app.set('views', __dirname + '/views');
 app.engine('html', engines.ejs);
 app.set('view engine', 'html');
@@ -20,10 +22,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(express.json());
+app.use(flash());
+
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true

@@ -29,7 +29,7 @@
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
     "pug": "^3.0.2",
-    "req-flash": "^0.0.3",
+    "connect-flash": "^0.1.1",
     "request": "^2.88.2"
   },
   "devDependencies": {

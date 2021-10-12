@@ -12,7 +12,7 @@ export const getUserDetails = asyncHandler(async(email) => {
     return await usersModel.select('*', clause);
 });
 
-export const registerUser = async(req, res) => {
+export const registerUser = async(req, res, next) => {
   if(localStorage.getItem('email')) {
     res.cookie('email', localStorage.getItem('email'), {
       httpOnly: true,
@@ -38,12 +38,13 @@ export const registerUser = async(req, res) => {
         res.redirect('/myBlogs');
       }
     else {
-      throw createError(200, `User '${email}' already exists`)
+      next(createError(200, `User '${email}' already exists`));
+      // throw createError(200, `User '${email}' already exists`)
       // res.status(200).json({messages: 'User already exists. Please login using this email'});
     }
 }}
 
-export const performLogin = async(req, res) => {
+export const performLogin = async(req, res, next) => {
   if(localStorage.getItem('email')) {
     res.cookie('email', localStorage.getItem('email'), {
       httpOnly: true,
@@ -65,13 +66,11 @@ export const performLogin = async(req, res) => {
         await setLocalStorage(email);
         res.redirect('/myBlogs');
       } else {
-        throw createError(403, `Invalid password for '${email}'`)
-        //res.status(403).json({messages: 'Invalid password for '+email});
+        next(createError(403, `Invalid password for '${email}'`));
       }
     }
     else {
-      throw createError(404, `User '${email}' not found`)
-      // res.status(404).json({messages: 'No user found with emailId '+email + ". Please Sign Up"});
+      next(createError(404, `User '${email}' not found`))
     }
   }
 }

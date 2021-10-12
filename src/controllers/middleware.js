@@ -15,32 +15,18 @@ export const validateSession = async(req, res, next) => {
 }
 
 export const errorLogger = async(error, req, res, next) => {
-  console.log(error)
+  console.log(error.message)
+  console.log(error.status)
+  console.log(error.statusCode)
+  console.log(error.stack)
   next(error)
 }
 
 export const errorResponder = async(error, req, res, next) => {
-  if (res.headersSent) {
-    return next(error)
-  } else if (error.type === 'user-already-exists') {
-    logError(200, res, error)
-  } else if (error.type === 'time-out') {
-    logError(408, res, error)
-  } else if (error.type === 'unauthorized') {
-    logError(401, res, error)
-  } else if (err.type === 'invalid password') {
-    logError(403, res, error)
-  } else if (err.type === 'not found') {
-    logError(404, res, error)
-  } else {
-    logError(500, res, error)
-  }
-}
-
-const logError = (statusCode, res, error) => {
-  res.status(statusCode)
-  res.json({
-    message: error.message,
-    stack: error.stack
-  })
+  req.flash("error", error.message);
+  res.locals.messages = req.flash('error');
+  // const page = req.url.split('/')[2];
+  // console.log(page);
+  res.render(`login`, {msg: req.flash('error')});
+  //res.redirect('back');
 }
